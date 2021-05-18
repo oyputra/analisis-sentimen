@@ -1,0 +1,75 @@
+<!-- child template -->
+<!-- halaman utama -->
+{% extends 'base.html' %}
+{% set active_page = "home" %}
+{% block title %}
+    Home Page
+{% endblock %}
+
+{% block content %}
+        <!-- versi minimize -->
+        <div class="row my-5">
+            <div class="col-lg-7 col-md-12 mb-3">
+                <h1 class="fw-bold display-4">Analisis Sentimen</h1>
+                <p class="lead fs-4">
+                    &nbsp; &nbsp; &nbsp; Analisis sentimen atau opinion mining adalah 
+                    cabang disiplin ilmu natural language processing (NLP) yang menganalisis persepsi atau opini dan 
+                    konsep yang berkaitan dengan sentimen, evaluasi, sikap, dan emosi 
+                    melalui data secara tekstual.
+                </p>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-lg mt-3" 
+                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Get Started
+                </button>
+            </div>
+            <div class="col-lg-5 col-md-12">
+                    <p class="lead fs-4">College :</p>
+                    <div class="d-flex justify-content-center mt-3">
+                        <img class="d-flex justify-content-end" src="{{ url_for('static', filename='/img/logokalbis.png') }}" alt="no picture" style="width: 360px;">
+                    </div>
+            </div>
+
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Model Construction</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">Dataset</div>
+                                <div class="col-md-8 ms-auto">: 1000 Data</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">Vectorizer</div>
+                                <div class="col-md-8 ms-auto">: TF-IDF</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">Classifier</div>
+                                <div class="col-md-8 ms-auto">: Support Vector Machine (SVM)</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">Reports</div>
+                                <div class="col-md-8 ms-auto">: Confusion Matrix</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">Evaluation Metrics</div>
+                                <div class="col-md-8 ms-auto">: Accuracy, Precision, Recall, and F1</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <a href="{{ url_for('crawling_page') }}" 
+                    class="btn btn-primary col">Train</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    
+{% endblock %}

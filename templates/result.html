@@ -1,0 +1,105 @@
+<!-- child template -->
+<!-- halaman hasil -->
+{% extends 'base.html' %}
+{% set active_page = "result" %}
+{% block title %}
+    Result Page
+{% endblock %}
+
+{% block content %}
+    
+        <div class="row mb-4">
+            <h1>Sentiment Classification</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-3">
+                <div class="row">
+                    <div class="col-5">
+                        <p>Key Word</p>
+                    </div>
+                    <div class="col-5">
+                        <p>: {{ keyword }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <p>Number of Tweets</p>
+                    </div>
+                    <div class="col-5">
+                        <p>: {{ tweets }}</p>
+                    </div>
+                </div>
+                <div class="row mt-3 fw-bold">
+                    <p>Model Performance</p>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <p>Accuracy</p>
+                        <p>Precision</p>
+                        <p>Recall</p>
+                        <p>F1</p>
+                    </div>
+                    <div class="col-5">
+                        <p></p>
+                        <p>: {{ accuracy|round(3, 'floor') }}</p>
+                        <p>: {{ precision|round(3, 'floor') }}</p>
+                        <p>: {{ recall|round(3, 'floor') }}</p>
+                        <p>: {{ f1|round(3, 'floor') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <p class="fw-bold">Percentage :</p>
+                <div class="col img-chart" id="piechart_3d"></div>
+            </div>
+        </div>
+
+        <script type="text/javascript" 
+        src="https://www.gstatic.com/charts/loader.js">
+        </script>
+        <script type="text/javascript">
+            google.charts.load("current", {packages:["corechart"]});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    {% for key, value in data.items() %}
+                        {% if value is string %}
+                            ['{{ key }}', '{{ value }}'],
+                        {% else %}
+                            ['{{ key }}', {{ value }}],
+                        {% endif %}
+                    {% endfor %}
+                ]);
+                var options = {
+                title: '',
+                is3D: true,
+                }
+                var chart = new google.visualization.PieChart
+                (document.getElementById('piechart_3d'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <!-- <hr class="my-5"> -->
+        {% if tables == null %}
+        {% else %}
+        <div class="d-grid gap-2 my-3">
+            <div class="row">
+                <div class="col">
+                    <h3 class="">Result :</h3>           
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <a href="{{ url_for('home_page') }}" 
+                    class="btn btn-primary">Finish</a>
+                </div>
+            </div>
+            <div class="row">
+                {% for table in tables %}
+                    {{ titles[loop.index] }}
+                    {{ table|safe }}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+{% endblock %}

@@ -1,0 +1,54 @@
+<!-- child template -->
+<!-- halaman aplikasi -->
+{% extends 'base.html' %}
+{% set active_page = "application" %}
+{% block title %}
+    Application Page
+{% endblock %}
+
+{% block content %}
+    
+        <div class="row mb-3">
+            <h1 class="mb-4">Crawling Data Twitter</h1>
+            <form method="POST" action="{{ url_for('crawling_page') }}">
+                {{ form.csrf_token }}
+                <div class="form-floating mb-3">
+                    {{ form.keyword
+                        (class="form-control", 
+                        required=False, 
+                        id="floatingInput") }}
+                    {{ form.keyword.label
+                        (class="text-muted font-monospace", 
+                        for="floatingInput") }}
+                    {% for error in form.keyword.errors %}
+                        <p class="text-danger fw-bold">{{ error }}</p>
+                    {% endfor %}
+                    <p class="text-muted fst-italic">*default: "Vaksinasi OR Vaksin"</p>
+                    <p class="text-muted fst-italic">*use OR when entering 2 keywords</p>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.tweets
+                        (class="form-control", 
+                        required=False, 
+                        id="floatingInput") }}
+                    {{ form.tweets.label
+                        (class="text-muted font-monospace",
+                        for="floatingInput") }}
+                    {% for error in form.tweets.errors %}
+                        <p class="text-danger fw-bold">{{ error }}</p>
+                    {% endfor %}
+                    <p class="text-muted fst-italic mx-0">*the maximum input limit is 1000 data, more than that it will take a long time for the data crawling stage and also for the stemming stage. and we know it's very unpleasant</p>
+                </div>
+                <a href="{{ url_for('home_page') }}" class="btn btn-secondary">Back</a>
+                <div class="button">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="loading-icon fa fa-spinner fa-spin hide"></i>
+                        <span class="btn-txt">
+                            Submit
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+{% endblock %}

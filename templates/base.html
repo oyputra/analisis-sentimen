@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+        
+        <!-- Icon FontAwesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+        
+        <!-- Font GoogleFont -->
+        <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='nanobar.min.js') }}"></script>
+
+        <!-- judul halaman -->
+        <!-- menggunakan template inheritance -->
+        <title>
+            {% block title %}
+            <!-- Title -->
+            {% endblock %}
+        </title>
+        
+        <!-- pembuatan tab navigasi bar -->
+        {% set navigation_bar = [
+            ('/', 'home', 'Home'),
+            ('/application', 'application', 'Application'),
+            ('/result', 'result', 'Result')
+        ] -%}
+        {% set active_page = active_page|default('index') -%}
+
+        <style>
+            html, body, p{
+                margin: 0;
+                padding: 0;
+                font-family: "Quicksand", sans-serif;
+            }
+            nav{
+                background-color: #e9ecef;
+            }
+            .active{
+                font-weight: bold;
+                border-bottom: 2px solid black;
+            }
+            .min-height{
+                min-height: 447px;
+            }
+
+            table.dataframe, .dataframe th, .dataframe td {
+                border: none;
+                border-bottom: 1px solid #C8C8C8;
+                border-collapse: collapse;
+                text-align:left;
+                padding: 10px;
+                margin-bottom: 40px;
+                font-size: 0.9em;
+            }
+            tr:nth-child(odd){ 
+                background-color:#eee; 
+            }
+            tr:nth-child(even){ 
+                background-color:#fff; 
+            }
+            tr:hover{ 
+                background-color: lightskyblue;
+            }
+            /* Loader */
+            .loader {
+                position: fixed;
+                z-index: 9999;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .loader > img {
+                width: 100px;
+            }
+            .loader.hidden {
+                animation: fadeOut 1s;
+                animation-fill-mode: forwards;
+            }
+            @keyframes fadeOut {
+                100% {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+            }
+            .my-class .bar {
+                background: #000;;
+            }
+
+            .button {
+                border: none;
+                color: white;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+            .button:disabled {
+                opacity: 0.5;
+            }
+            .hide {
+                display: none;
+            }
+            /* chart pie */
+            @media (min-width: 700px) {
+                .img-chart{
+                    width: 600px;
+                    height: 300px;
+                }
+            }
+            @media (max-width: 640px) {
+                .img-chart{
+                    width: 516px;
+                    height: 300px;
+                }
+            }
+            @media (max-width: 360px) {
+                .img-chart{
+                    width: 336px;
+                    height: 200px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="loader">
+            <img src="{{ url_for('static', filename='img/Rocket.gif') }}" alt="Loading..." />
+        </div>
+        <div class="nanobar my-class" id="my-id" style="position: fixed;">
+            <div class="bar"></div>
+        </div>
+
+        
+        <script>
+            window.addEventListener("load", function () {
+                const loader = document.querySelector(".loader");
+                loader.className += " hidden"; // class "loader hidden"
+            });
+            
+            var options = {
+                classname: 'my-class',
+                id: 'my-id'
+            };
+            var nanobar = new Nanobar( options );
+            nanobar.go( 30 );
+            nanobar.go( 76 );
+            nanobar.go(100);
+
+            $(document).ready(function() {
+                $(".button").on("click", function() {
+                    $(".result").text("");
+                    $(".loading-icon").removeClass("hide");
+                    $(".button").attr("disabled", true);
+                    $(".btn-txt").text("Fetching Data From Server...");
+                });
+            });
+        </script>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid mx-3">
+                <a class="navbar-brand font-monospace fw-bold text-secondary" href="{{ url_for('home_page') }}">
+                    <i class="fas fa-chart-pie fa-lg"></i> Analisis Sentimen
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- tampilan tab navigasi bar -->
+                        {% for href, id, caption in navigation_bar %}
+                            <li class="nav-item">
+                                {% if id == active_page %}
+                                    <a  class="nav-link active disabled" 
+                                    href="{{ href|e }}">{{ caption|e }}</a>
+                                {% else %}
+                                    <a  class="nav-link disabled" 
+                                    href="{{ href|e }}">{{ caption|e }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item dropdown dropstart">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-graduate fa-2x"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                            <li><p class="dropdown-item">Oktavian Yudistira Putra</p></li>
+                            <li><p class="dropdown-item">2017103770</p></li>
+                            <li><p class="dropdown-item">Informatika</p></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><p class="dropdown-item">Skripsi</p></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+        <div class="container py-3 min-height">
+            <!-- template konten -->
+            <!-- menggunakan template inheritance -->
+            {% block content %}
+                <!-- content -->
+            {% endblock %}
+        </div>
+    </body>
+    <!-- Footer -->
+    <footer class="bg-dark text-center text-white">
+        <!-- Grid container -->
+        <div class="container p-4">
+            <!-- Section: Social media -->
+            <section class="mb-5">
+                <!-- Facebook -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <!-- Twitter -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <!-- Google -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-google"></i>
+                </a>
+                <!-- Instagram -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <!-- Linkedin -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <!-- Github -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-github"></i>
+                </a>
+            </section>
+            <!-- Section: Social media -->
+            <!-- Section: Text -->
+            <section class="mb-4">
+                <p>
+                "PENGEMBANGAN APLIKASI
+                ANALISIS SENTIMEN MASYARAKAT
+                TERHADAP VAKSINASI COVID-19
+                PADA MEDIA SOSIAL TWITTER
+                "
+                </p>
+            </section>
+            <!-- End Section: Text -->
+        </div>
+        <!-- Grid container -->
+
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © Copyright <script>document.write(new Date().getFullYear())</script> <br> Developer: Oktavian Yudistira Putra
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+    
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ" crossorigin="anonymous"></script>
+    -->
+</html>
