@@ -1,10 +1,10 @@
-# impor library
+# impor library GUI
 from flask import Flask,render_template,request
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, validators
 from wtforms.validators import InputRequired, Length
 
-# library aplikasi
+# import library aplikasi
 from tweepy import OAuthHandler
 import tweepy
 import pandas as pd
