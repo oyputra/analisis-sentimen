@@ -49,7 +49,7 @@ def crawling_page():
     # melakukan pengujian klasifikasi sentimen (versi minimize)
     if form.validate_on_submit():
         # membaca dan membuka file
-        df_model = pd.read_csv('static\data_label.csv')
+        df_model = pd.read_csv('static/data_label.csv')
         df_model.sort_values("sentimen", inplace = True) # sorting by first name
         df_model.index = np.arange(1,len(df_model)+1) # mengatur ulang index
         df_model = df_model.loc[:1000]
